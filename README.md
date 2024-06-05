@@ -1,1 +1,1 @@
-# MCJewelryHunt
+# MCGemHunt
