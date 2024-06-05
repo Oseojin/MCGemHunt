@@ -1,0 +1,4 @@
+name: GemHuntPlugin
+version: '${version}'
+main: org.osj.gemhuntplugin.GemHuntPlugin
+api-version: '1.20'
