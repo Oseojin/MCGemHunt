@@ -1,0 +1,4 @@
+name: GemHunt
+version: '${version}'
+main: osj.mcplugin.floatingcloud.GemHunt
+api-version: '1.20'
