@@ -77,10 +77,10 @@ public class DB_Connect
         String coloumName = "u_name";
         SetData(uuid, coloumName, name);
     }
-    public void SetPrefix(UUID uuid, String prefix)
+    public void SetStat(UUID uuid, String stat, Integer lv)
     {
-        String coloumName = "u_prefix";
-        SetData(uuid, coloumName, prefix);
+        String coloumName = "u_" + stat;
+        SetData(uuid, coloumName, lv);
     }
 
     public int insertMember(Player player)
@@ -107,11 +107,14 @@ public class DB_Connect
                 {
                     // PreparedStatement 초기화 (재사용을 위해)
                     pstmt.clearParameters();
-                    sql = "INSERT INTO " + table.toUpperCase() + " (u_uuid, u_name, u_prefix) VALUES (?, ?, ?)";
+                    sql = "INSERT INTO " + table.toUpperCase() + " (u_uuid, u_name, u_discovery, u_plenty, u_treasure, u_physical) VALUES (?, ?, ?, ?, ?, ?)";
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setString(1, player.getUniqueId().toString()); // uuid
                     pstmt.setString(2, player.getName()); // name
-                    pstmt.setString(3, ""); // prefix
+                    pstmt.setInt(3, 0); // discovery level
+                    pstmt.setInt(4, 0); // plenty level
+                    pstmt.setInt(5, 0); // treasure level
+                    pstmt.setInt(6, 0); // physical level
                     pstmt.executeUpdate();
                 } catch (Exception e)
                 {
@@ -149,7 +152,7 @@ public class DB_Connect
         {
             conn = this.open_Connection();
             // 사용자의 정보가 있는지 없는지 확인하는 질의문을 생성한다.
-            String sql = "select u.u_no, u.u_uuid, u.u_name, u.u_prefix from " + table + " u where u.u_uuid = ?";
+            String sql = "select u.u_no, u.u_uuid, u.u_name, u.u_discovery, u.u_plenty, u.u_treasure, u.u_physical from " + table + " u where u.u_uuid = ?";
             // PreparedStatement에 질의어를 넣고
             pstmt = conn.prepareStatement(sql);
             // 질의어에 ?라고 적혀 있는 값을 정의 해준다.
@@ -161,6 +164,10 @@ public class DB_Connect
 
             user.loadUUID(UUID.fromString(rs.getString("u_uuid")));
             user.loadName(rs.getString("u_name"));
+            user.loadDiscovery(rs.getInt("u_discovery"));
+            user.loadPlenty(rs.getInt("u_plenty"));
+            user.loadTreasure(rs.getInt("u_treasure"));
+            user.loadPhysical(rs.getInt("u_physical"));
         }
         catch (Exception e)
         {

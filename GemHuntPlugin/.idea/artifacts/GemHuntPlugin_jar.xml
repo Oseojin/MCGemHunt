@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="GemHuntPlugin:jar">
+    <output-path>$PROJECT_DIR$/../../../MinecraftServer/1.20.4 GemHunt/plugins</output-path>
+    <root id="archive" name="GemHuntPlugin.jar">
+      <element id="module-output" name="GemHuntPlugin.main" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
+    </root>
+  </artifact>
+</component>

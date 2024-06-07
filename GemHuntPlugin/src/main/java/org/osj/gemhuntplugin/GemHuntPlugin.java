@@ -6,6 +6,7 @@ import org.osj.gemhuntplugin.CHUNKOWNERSHIP.COMMAND.ChunkRemove;
 import org.osj.gemhuntplugin.CHUNKOWNERSHIP.ChunkManager;
 import org.osj.gemhuntplugin.CHUNKOWNERSHIP.EVENT.ChunkInteractEvent;
 import org.osj.gemhuntplugin.DATAMANAGE.ConfigManager;
+import org.osj.gemhuntplugin.GEMS.GemManager;
 import org.osj.gemhuntplugin.GEMS.GemRandom;
 import org.osj.gemhuntplugin.USER.COMMAND.AddWhiteListCommand;
 import org.osj.gemhuntplugin.USER.EVENT.UserJoinEvent;
@@ -19,6 +20,7 @@ public final class GemHuntPlugin extends JavaPlugin
     private static ConfigManager configManager;
     private static ChunkManager chunkManager;
     private static WorldManager worldManager;
+    private static GemManager gemManager;
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -27,6 +29,7 @@ public final class GemHuntPlugin extends JavaPlugin
         worldManager = new WorldManager();
         userManager = new UserManager();
         chunkManager = new ChunkManager();
+        gemManager = new GemManager();
 
         registerEvent();
         registerCommand();
@@ -69,5 +72,9 @@ public final class GemHuntPlugin extends JavaPlugin
     public static WorldManager getWorldManager()
     {
         return worldManager;
+    }
+    public static GemManager getGemManager()
+    {
+        return gemManager;
     }
 }

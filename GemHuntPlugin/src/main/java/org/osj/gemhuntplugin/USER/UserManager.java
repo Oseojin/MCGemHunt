@@ -14,7 +14,11 @@ public class UserManager
     {
         User newUser = new User(
                 player.getUniqueId(),
-                player.getName()
+                player.getName(),
+                0,
+                0,
+                0,
+                0
         );
         onlineUserData.put(player.getUniqueId(), newUser);
     }
