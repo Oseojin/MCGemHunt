@@ -4,10 +4,7 @@ import it.unimi.dsi.fastutil.Pair;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class GemManager
 {
@@ -44,13 +41,13 @@ public class GemManager
 
     private void initFarmGemStoneHashMap()
     {
-        farmGemStoneHashMap.put(Material.WHEAT, Pair.of("wheat_seed_crystal", 0.002));
-        farmGemStoneHashMap.put(Material.CARROTS, Pair.of("carrot_crystal", 0.002));
-        farmGemStoneHashMap.put(Material.POTATOES, Pair.of("potato_crystal", 0.002));
-        farmGemStoneHashMap.put(Material.BEETROOTS, Pair.of("beet_seed_crystal", 0.002));
-        farmGemStoneHashMap.put(Material.COCOA, Pair.of("cocoa_bean_crystal", 0.002));
-        farmGemStoneHashMap.put(Material.PUMPKIN, Pair.of("pumpkin_seed_crystal", 0.002));
-        farmGemStoneHashMap.put(Material.MELON, Pair.of("melon_seed_crystal", 0.002));
+        farmGemStoneHashMap.put(Material.WHEAT, Pair.of("wheat_seed_crystal", 0.005));
+        farmGemStoneHashMap.put(Material.CARROTS, Pair.of("carrot_crystal", 0.005));
+        farmGemStoneHashMap.put(Material.POTATOES, Pair.of("potato_crystal", 0.005));
+        farmGemStoneHashMap.put(Material.BEETROOTS, Pair.of("beet_seed_crystal", 0.005));
+        farmGemStoneHashMap.put(Material.COCOA, Pair.of("cocoa_bean_crystal", 0.005));
+        farmGemStoneHashMap.put(Material.PUMPKIN, Pair.of("pumpkin_seed_crystal", 0.001));
+        farmGemStoneHashMap.put(Material.MELON, Pair.of("melon_seed_crystal", 0.001));
     }
 
     private void initFishingGemStoneHashMap()
@@ -106,10 +103,10 @@ public class GemManager
     private void initHuntingGemStoneHashMap()
     {
         huntingGemStoneHashMap.put(EntityType.SKELETON, Pair.of("calculus", 0.01));
-        huntingGemStoneHashMap.put(EntityType.GOAT, Pair.of("reinforce_horn", 0.05));
         huntingGemStoneHashMap.put(EntityType.WITHER_SKELETON, Pair.of("calculus_black", 0.01));
-        huntingGemStoneHashMap.put(EntityType.RAVAGER, Pair.of("ivory", 0.1));
         huntingGemStoneHashMap.put(EntityType.OCELOT, Pair.of("catseye", 0.05));
+        huntingGemStoneHashMap.put(EntityType.RAVAGER, Pair.of("ivory", 0.1));
+        huntingGemStoneHashMap.put(EntityType.GOAT, Pair.of("reinforce_horn", 0.02));
         huntingGemStoneHashMap.put(EntityType.ELDER_GUARDIAN, Pair.of("none", 0.0));
         huntingGemStoneHashMap.put(EntityType.ENDER_DRAGON, Pair.of("dragon_heart", 0.5));
         huntingGemStoneHashMap.put(EntityType.WITHER, Pair.of("octagon", 0.25));
@@ -140,6 +137,14 @@ public class GemManager
             return fishingGemStoneHashMap.get(targetMaterial);
         }
         return null;
+    }
+
+    public String getFishingGemStoneRandom()
+    {
+        Random random = new Random();
+        int fishingGemListSize = fishingGemStoneHashMap.size();
+        int randomIndex = random.nextInt(fishingGemListSize);
+        return fishingGemStoneHashMap.values().stream().toList().get(randomIndex);
     }
 
     public List<Pair<String, Double>> getWoodGemStone(Material targetMaterial)

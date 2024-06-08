@@ -43,12 +43,6 @@ public class UserJoinEvent implements Listener
         }
         User joinUser = DB_Connect.getInstance().DB_PlayerInfo(uuid);
         // PlayerScoreBoard.setScoreboard(player);
-
-        int physicalLv = joinUser.getPhysical();
-        double attackDamge = 1 + (physicalLv * 0.5);
-        double maxHeatlh = 20 + (physicalLv * 0.5);
-        player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(attackDamge);
-        player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHeatlh);
     }
 
     @EventHandler

@@ -10,8 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -22,6 +21,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.osj.gemhuntplugin.GemHuntPlugin;
+import org.osj.gemhuntplugin.USER.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +85,8 @@ public class GemRandom implements Listener
     public void onMineralDropItem(BlockBreakEvent event)
     {
         Block block = event.getBlock();
-        ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
+        Player player = event.getPlayer();
+        ItemStack tool = player.getInventory().getItemInMainHand();
         Bukkit.getConsoleSender().sendMessage("광물 " + block.getType());
 
         if(!mineralList.contains(block.getType())) // 지정된 블럭이 아니면 리턴
@@ -104,35 +105,30 @@ public class GemRandom implements Listener
         }
 
         Bukkit.getConsoleSender().sendMessage("광물페어 " + mineralPair);
+        User user = GemHuntPlugin.getUserManager().getUserData(player.getUniqueId());
 
         String itemID = mineralPair.left(); // 커스텀 아이템 네임스페이스 id
-        double probability = mineralPair.right() + tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS); // 커스텀 아이템 등장 확률
-        int gemNum = 0;
+        double probability = (mineralPair.right() + tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS)) * (1 + ((double)user.getDiscovery() / (double)user.getMaxDiscovery())); // 커스텀 아이템 등장 확률
         Random random = new Random();
         double selectedNum = random.nextDouble();
         Bukkit.getConsoleSender().sendMessage("행운레벨: " + tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS) + " 현재확률: " + probability);
 
-        if(selectedNum <= probability)
-        {
-            gemNum++;
-        }
-
-        if(gemNum == 0) // 안뽑혔으면 리턴
+        if(selectedNum > probability)
         {
             return;
         }
 
         /*CustomStack gemCustomStack = CustomStack.getInstance("gemhunt:"+itemID);
         ItemStack gemItemStack = gemCustomStack.getItemStack();
-        gemItemStack.setAmount(gemNum);
 
-        block.getWorld().dropItem(event.getItems().get(0).getLocation(), gemItemStack);*/
+        block.getWorld().dropItem(block.getLocation(), gemItemStack);*/
     }
 
     @EventHandler
     public void onWoodDropItem(BlockBreakEvent event)
     {
         Block block = event.getBlock();
+        Player player = event.getPlayer();
         ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
         Bukkit.getConsoleSender().sendMessage("나무 " + block.getType());
 
@@ -152,13 +148,14 @@ public class GemRandom implements Listener
         List<String> woodGemRandomList = new ArrayList<>(); // 리스트 순서의 확률 문제 때문에 뽑힌 애들을 모아서 한 번 더 랜덤 추출
 
         Bukkit.getConsoleSender().sendMessage("나무페어 " + woodPairList);
+        User user = GemHuntPlugin.getUserManager().getUserData(player.getUniqueId());
 
         Random random = new Random();
 
         for(int i = 0; i < woodPairList.size(); i++)
         {
             String itemID = woodPairList.get(i).left();
-            double probability = woodPairList.get(i).right() + tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+            double probability = (woodPairList.get(i).right() + tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS)) * (1 + ((double)user.getDiscovery() / (double)user.getMaxDiscovery()));
             Bukkit.getConsoleSender().sendMessage("행운레벨: " + tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS) + " 현재확률: " + probability);
             double selectedNum = random.nextDouble();
 
@@ -173,8 +170,8 @@ public class GemRandom implements Listener
             return;
         }
 
-        /*String selectedItemID = woodGemRandomList.get(random.nextInt(woodGemRandomList.size()));
-        CustomStack gemCustomStack = CustomStack.getInstance("gemhunt:"+selectedItemID);
+        String selectedItemID = woodGemRandomList.get(random.nextInt(woodGemRandomList.size()));
+        /*CustomStack gemCustomStack = CustomStack.getInstance("gemhunt:"+selectedItemID);
         ItemStack gemItemStack = gemCustomStack.getItemStack();
 
         block.getWorld().dropItem(block.getLocation(), gemItemStack);*/
@@ -237,7 +234,19 @@ public class GemRandom implements Listener
             String gemID = GemHuntPlugin.getGemManager().getFishingGemStone(caughtMaterial);
             if(gemID == null)
             {
-                return;
+                User user = GemHuntPlugin.getUserManager().getUserData(event.getPlayer().getUniqueId());
+                double probability = (float)user.getTreasure() / 100.0;
+                Random random = new Random();
+                double selectedNum = random.nextDouble();
+
+                Bukkit.getConsoleSender().sendMessage("낚시확률: " + probability + "% 현재확률: " + selectedNum);
+
+                if(selectedNum > probability)
+                {
+                    return;
+                }
+
+                gemID = GemHuntPlugin.getGemManager().getFishingGemStoneRandom();
             }
 
             event.getPlayer().sendMessage("" + gemID);
@@ -253,5 +262,28 @@ public class GemRandom implements Listener
     public void onKillMonster(EntityDeathEvent event)
     {
         // 좀비, 스켈레톤, 크리퍼, 엔더맨, 좀벌레, 슬라임, 좀비 피그맨, 피글린, 난폭한 피글린, 가스트, 위더 스켈레톤, 블레이즈, 마그마 큐브, 셜커, 엔더 드래곤, 위더 -> 1개씩 총 16종의 오염된 보석
+        LivingEntity entity = event.getEntity();
+        EntityType type = entity.getType();
+        Pair<String, Double> huntPair = GemHuntPlugin.getGemManager().getHuntingGemStone(type);
+        if(huntPair == null)
+        {
+            return;
+        }
+
+        Random random = new Random();
+
+        String huntID = huntPair.left();
+        double probability = huntPair.right();
+        double selectedNum = random.nextDouble();
+
+        if(selectedNum > probability)
+        {
+            return;
+        }
+
+        /*CustomStack gemCustomStack = CustomStack.getInstance("gemhunt:"+huntID);
+        ItemStack gemItemStack = gemCustomStack.getItemStack();
+
+        block.getWorld().dropItem(block.getLocation(), gemItemStack);*/
     }
 }

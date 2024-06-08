@@ -6,6 +6,7 @@ import org.osj.gemhuntplugin.CHUNKOWNERSHIP.COMMAND.ChunkRemove;
 import org.osj.gemhuntplugin.CHUNKOWNERSHIP.ChunkManager;
 import org.osj.gemhuntplugin.CHUNKOWNERSHIP.EVENT.ChunkInteractEvent;
 import org.osj.gemhuntplugin.DATAMANAGE.ConfigManager;
+import org.osj.gemhuntplugin.GEMS.ProcessingGem;
 import org.osj.gemhuntplugin.GEMS.GemManager;
 import org.osj.gemhuntplugin.GEMS.GemRandom;
 import org.osj.gemhuntplugin.USER.COMMAND.AddWhiteListCommand;
@@ -40,6 +41,7 @@ public final class GemHuntPlugin extends JavaPlugin
         getServer().getPluginManager().registerEvents(new UserJoinEvent(), serverInstance);
         getServer().getPluginManager().registerEvents(new ChunkInteractEvent(), serverInstance);
         getServer().getPluginManager().registerEvents(new GemRandom(), serverInstance);
+        getServer().getPluginManager().registerEvents(new ProcessingGem(), serverInstance);
     }
     private void registerCommand()
     {
