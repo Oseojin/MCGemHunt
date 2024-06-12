@@ -46,8 +46,8 @@ public class GemManager
         farmGemStoneHashMap.put(Material.POTATOES, Pair.of("potato_crystal", 0.005));
         farmGemStoneHashMap.put(Material.BEETROOTS, Pair.of("beet_seed_crystal", 0.005));
         farmGemStoneHashMap.put(Material.COCOA, Pair.of("cocoa_bean_crystal", 0.005));
-        farmGemStoneHashMap.put(Material.PUMPKIN, Pair.of("pumpkin_seed_crystal", 0.001));
-        farmGemStoneHashMap.put(Material.MELON, Pair.of("melon_seed_crystal", 0.001));
+        farmGemStoneHashMap.put(Material.PUMPKIN_SEEDS, Pair.of("pumpkin_seed_crystal", 0.0005)); // 7.8125
+        farmGemStoneHashMap.put(Material.MELON_SEEDS, Pair.of("melon_seed_crystal", 0.00028)); // 7.9719...
     }
 
     private void initFishingGemStoneHashMap()

@@ -11,6 +11,7 @@ import org.osj.gemhuntplugin.GEMS.GemManager;
 import org.osj.gemhuntplugin.GEMS.GemRandom;
 import org.osj.gemhuntplugin.USER.COMMAND.AddWhiteListCommand;
 import org.osj.gemhuntplugin.USER.EVENT.UserJoinEvent;
+import org.osj.gemhuntplugin.USER.EVENT.UserWalkingEvent;
 import org.osj.gemhuntplugin.USER.UserManager;
 import org.osj.gemhuntplugin.WORLD.WorldManager;
 
@@ -42,6 +43,7 @@ public final class GemHuntPlugin extends JavaPlugin
         getServer().getPluginManager().registerEvents(new ChunkInteractEvent(), serverInstance);
         getServer().getPluginManager().registerEvents(new GemRandom(), serverInstance);
         getServer().getPluginManager().registerEvents(new ProcessingGem(), serverInstance);
+        getServer().getPluginManager().registerEvents(new UserWalkingEvent(), serverInstance);
     }
     private void registerCommand()
     {

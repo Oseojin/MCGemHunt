@@ -17,7 +17,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.osj.gemhuntplugin.GemHuntPlugin;
@@ -189,6 +193,139 @@ public class GemRandom implements Listener
             return;
         }
 
+        randomCrop(crop);
+    }
+
+    public static int getMaxCraftAmount(CraftingInventory inv)
+    {
+        if (inv.getResult() == null)
+        {
+            return 0;
+        }
+
+        int resultCount = inv.getResult().getAmount();
+        int materialCount = Integer.MAX_VALUE;
+
+        for (ItemStack is : inv.getMatrix())
+        {
+            if (is != null && is.getAmount() < materialCount)
+            {
+                materialCount = is.getAmount();
+            }
+        }
+
+        return resultCount * materialCount;
+    }
+
+    public static int fits(ItemStack stack, Inventory inv)
+    {
+        ItemStack[] contents = inv.getContents();
+        int result = 0;
+
+        for(int i = 0; i < contents.length - 5; i++)
+        {
+            if(contents[i] == null)
+            {
+                result += stack.getMaxStackSize();
+            }
+            else if(contents[i].isSimilar(stack))
+            {
+                result += Math.max(stack.getMaxStackSize() - contents[i].getAmount(), 0);
+            }
+        }
+
+        return result;
+    }
+
+    @EventHandler
+    public void onCraftSeed(CraftItemEvent event)
+    {
+        CraftingInventory inventory = event.getInventory();
+        ItemStack craftedItem = inventory.getResult();
+        ClickType clickType = event.getClick();
+        Player player = (Player) event.getWhoClicked();
+
+        switch (craftedItem.getType())
+        {
+            case PUMPKIN_SEEDS:
+            case MELON_SEEDS:
+                break;
+            default:
+                return;
+        }
+
+        int recipeAmount =craftedItem.getAmount();
+
+        switch (clickType)
+        {
+            case NUMBER_KEY:
+            case DROP:
+            case CONTROL_DROP:
+                event.setCancelled(true);
+                return;
+            case SHIFT_RIGHT:
+            case SHIFT_LEFT:
+                if(recipeAmount == 0)
+                    break;
+                int maxCraftable = getMaxCraftAmount(event.getInventory());
+                int capacity = fits(craftedItem, event.getView().getBottomInventory());
+
+                player.sendMessage(maxCraftable + " " + capacity);
+
+                if(capacity < maxCraftable)
+                {
+                    maxCraftable = ((capacity + recipeAmount - 1) / recipeAmount) * recipeAmount;
+                }
+                recipeAmount = maxCraftable;
+                break;
+        }
+
+        if(recipeAmount == 0)
+        {
+            return;
+        }
+
+        player.sendMessage(recipeAmount + "");
+
+        User user = GemHuntPlugin.getUserManager().getUserData(player.getUniqueId());
+        int plentyLv = user.getPlenty();
+
+        Pair<String, Double> cropPair = GemHuntPlugin.getGemManager().getFarmGemStone(craftedItem.getType());
+        if(cropPair == null) // 해당 아이템 아니면 리턴
+        {
+            return;
+        }
+        Random random = new Random();
+
+        Bukkit.getConsoleSender().sendMessage("작물페어 " + cropPair);
+
+        String cropID = cropPair.left();
+        double probability = cropPair.right() * (plentyLv / 10 + 1);
+
+        for(int i = 0; i < recipeAmount; i++)
+        {
+            double selectedNum = random.nextDouble();
+            if(selectedNum <= probability)
+            {
+                Bukkit.getConsoleSender().sendMessage("확률 " + selectedNum);
+                //CustomStack gemStack = CustomStack.getInstance("gemhunt:"+cropID);
+
+                if(player.getInventory().firstEmpty() == -1)
+                {
+                    //player.getWorld().dropItem(player.getLocation(), gemStack.getItemStack());
+                    player.getWorld().dropItem(player.getLocation(), new ItemStack(Material.VERDANT_FROGLIGHT));
+                }
+                else
+                {
+                    //player.getInventory().addItem(gemStack.getItemStack());
+                    player.getInventory().addItem(new ItemStack(Material.VERDANT_FROGLIGHT));
+                }
+            }
+        }
+    }
+
+    public static void randomCrop(Block crop)
+    {
         Pair<String, Double> cropPair = GemHuntPlugin.getGemManager().getFarmGemStone(crop.getType());
         if(cropPair == null) // 해당 아이템 아니면 리턴
         {
