@@ -87,7 +87,7 @@ public class GemRandom implements Listener
     }
 
     @EventHandler
-    public void onMineralDropItem(BlockBreakEvent event)
+    public void onMining(BlockBreakEvent event)
     {
         Block block = event.getBlock();
         Player player = event.getPlayer();
@@ -130,7 +130,7 @@ public class GemRandom implements Listener
     }
 
     @EventHandler
-    public void onWoodDropItem(BlockBreakEvent event)
+    public void onLogging(BlockBreakEvent event)
     {
         Block block = event.getBlock();
         Player player = event.getPlayer();
@@ -187,14 +187,23 @@ public class GemRandom implements Listener
     {
         // 밀, 딩근, 감자, 홍당무, 코코아콩, 수박, 호박 -> 2개씩 총 14종의 빛바랜 보석
         Block crop = event.getBlock();
-        Bukkit.getConsoleSender().sendMessage("작물 " + crop.getType());
         if(!cropList.contains(crop.getType())) // 해당 아이템 아니면 리턴
         {
             Bukkit.getConsoleSender().sendMessage("작물 아님");
             return;
         }
-
-        randomCrop(crop);
+        new BukkitRunnable()
+        {
+            @Override
+            public void run()
+            {
+                Ageable ageable = (Ageable) crop.getBlockData();
+                if(ageable.getAge() == ageable.getMaximumAge())
+                {
+                    randomCrop(crop);
+                }
+            }
+        }.runTaskLater(GemHuntPlugin.getServerInstance(), 1L);
     }
 
     public static int getMaxCraftAmount(CraftingInventory inv)
@@ -335,6 +344,9 @@ public class GemRandom implements Listener
 
         Random random = new Random();
 
+        Ageable ageable = (Ageable) crop.getBlockData();
+        Bukkit.getConsoleSender().sendMessage(""+ ageable.getAge() + " " + ageable.getMaximumAge());
+
         Bukkit.getConsoleSender().sendMessage("작물페어 " + cropPair);
 
         String cropID = cropPair.left();
@@ -349,16 +361,15 @@ public class GemRandom implements Listener
             return;
         }
 
-        new BukkitRunnable() // 임시로 나온거
+        new BukkitRunnable()
         {
             @Override
             public void run()
             {
-                crop.getWorld().getBlockAt(crop.getLocation()).setType(Material.EMERALD_BLOCK);
+                crop.getWorld().getBlockAt(crop.getLocation()).setType(Material.AIR);
+                CustomBlock.place("gemhunt:" + cropID, crop.getLocation());
             }
         }.runTaskLater(GemHuntPlugin.getServerInstance(), 1L);
-
-        //CustomBlock.place("gemhunt:" + cropID, crop.getLocation());
     }
 
     @EventHandler

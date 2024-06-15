@@ -41,11 +41,11 @@ public class GemManager
 
     private void initFarmGemStoneHashMap()
     {
-        farmGemStoneHashMap.put(Material.WHEAT, Pair.of("wheat_seed_crystal", 0.005));
-        farmGemStoneHashMap.put(Material.CARROTS, Pair.of("carrot_crystal", 0.005));
-        farmGemStoneHashMap.put(Material.POTATOES, Pair.of("potato_crystal", 0.005));
-        farmGemStoneHashMap.put(Material.BEETROOTS, Pair.of("beet_seed_crystal", 0.005));
-        farmGemStoneHashMap.put(Material.COCOA, Pair.of("cocoa_bean_crystal", 0.005));
+        farmGemStoneHashMap.put(Material.WHEAT, Pair.of("crystal_wheat", 0.005));
+        farmGemStoneHashMap.put(Material.CARROTS, Pair.of("crystal_carrot", 0.005));
+        farmGemStoneHashMap.put(Material.POTATOES, Pair.of("crystal_potato", 0.005));
+        farmGemStoneHashMap.put(Material.BEETROOTS, Pair.of("crystal_beet", 0.005));
+        farmGemStoneHashMap.put(Material.COCOA, Pair.of("crystal_cocoa", 0.005));
         farmGemStoneHashMap.put(Material.PUMPKIN_SEEDS, Pair.of("pumpkin_seed_crystal", 0.0005)); // 7.8125
         farmGemStoneHashMap.put(Material.MELON_SEEDS, Pair.of("melon_seed_crystal", 0.00028)); // 7.9719...
     }

@@ -105,8 +105,10 @@ public class UserWalkingEvent implements Listener
                     }
                     crop.setAge(crop.getAge()+1);
                     cropList[i][j].setBlockData(crop);
-                    player.sendMessage(growthChance + " " + crop.getAge() + " " + (i*3 + j + 1) + " " + cropList[i][j].getLocation());
-                    GemRandom.randomCrop(cropList[i][j]);
+                    if(crop.getAge() == crop.getMaximumAge()) // 한 단계 올린 후에 다자란 블럭이면 랜덤 실행
+                    {
+                        GemRandom.randomCrop(cropList[i][j]);
+                    }
                 }
             }
         }
@@ -123,8 +125,10 @@ public class UserWalkingEvent implements Listener
             }
             crop.setAge(crop.getAge()+1);
             cropList[1][1].setBlockData(crop);
-            player.sendMessage(growthChance + " " + crop.getAge());
-            GemRandom.randomCrop(cropList[1][1]);
+            if(crop.getAge() == crop.getMaximumAge()) // 한 단계 올린 후에 다자란 블럭이면 랜덤 실행
+            {
+                GemRandom.randomCrop(cropList[1][1]);
+            }
         }
     }
 }
