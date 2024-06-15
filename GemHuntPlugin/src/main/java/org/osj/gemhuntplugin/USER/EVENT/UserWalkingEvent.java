@@ -101,10 +101,6 @@ public class UserWalkingEvent implements Listener
                     Ageable crop = (Ageable) cropList[i][j].getBlockData();
                     if(crop.getAge() >= crop.getMaximumAge()) // 다 자란 블럭이면 리턴
                     {
-                        if(plenty >= 30) // 30 레벨 이상은 수확하고 다시 심기까지 활성화
-                        {
-
-                        }
                         continue;
                     }
                     crop.setAge(crop.getAge()+1);

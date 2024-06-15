@@ -17,6 +17,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -421,6 +422,35 @@ public class GemRandom implements Listener
         /*CustomStack gemCustomStack = CustomStack.getInstance("gemhunt:"+huntID);
         ItemStack gemItemStack = gemCustomStack.getItemStack();
 
-        block.getWorld().dropItem(block.getLocation(), gemItemStack);*/
+        entity.getWorld().dropItem(entity.getLocation(), gemItemStack);*/
+    }
+
+    @EventHandler
+    public void onHeadButt(EntityDropItemEvent event)
+    {
+        Entity entity = event.getEntity();
+        EntityType entityType = entity.getType();
+        ItemStack dropItem = event.getItemDrop().getItemStack();
+        Material dropItemType = dropItem.getType();
+
+        if(entityType.equals(EntityType.GOAT) && dropItemType.equals(Material.GOAT_HORN)) // 엔티티가 염소이고 드랍된 아이템이 염소 뿔이면
+        {
+            Pair<String, Double> huntPair = GemHuntPlugin.getGemManager().getHuntingGemStone(entityType);
+            Random random = new Random();
+
+            String huntID = huntPair.left();
+            double probability = huntPair.right();
+            double selectedNum = random.nextDouble();
+
+            if(selectedNum > probability)
+            {
+                return;
+            }
+
+            /*CustomStack gemCustomStack = CustomStack.getInstance("gemhunt:"+huntID);
+            ItemStack gemItemStack = gemCustomStack.getItemStack();
+
+            entity.getWorld().dropItem(entity.getLocation(), gemItemStack);*/
+        }
     }
 }
